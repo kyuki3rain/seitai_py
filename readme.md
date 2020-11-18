@@ -7,6 +7,8 @@ Google Chromeが必須
 - eel
 - matplotlib
 - pyserial
+
+
 をそれぞれ
 python -m pip install <パッケージ名>
 でインストール
