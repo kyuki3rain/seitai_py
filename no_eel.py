@@ -3,7 +3,7 @@ import np_func
 import eel_func
 import serial_func
  
-range = range(1, 50)
+length = 50
 port = "COM3"
 
 ser = serial_func.start(port)
@@ -11,11 +11,11 @@ ser = serial_func.start(port)
 plt = plot_func.init()
 
 data = serial_func.get_data(ser)
-result = np_func.init(data)
+result = np_func.init(data, length)
 
 while True:
     try:
-        for i in range:
+        for i in range(0, length):
             data = serial_func.get_data(ser)
             print(data, i)
             if len(data) != 2:
