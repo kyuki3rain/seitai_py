@@ -7,3 +7,8 @@ function render_data(data, data_length){
         document.getElementById("text").innerHTML += "\n";
     }
 }
+
+eel.expose(close_page)
+function close_page(){
+    window.close();
+}

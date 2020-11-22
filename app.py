@@ -47,7 +47,7 @@ while True:
                 j += 1
                 data = import_data.get(data_length - 1, j, k)
 
-            print(data, j)
+            print(data)
             if len(data) != data_length:
                 continue
             
@@ -60,5 +60,6 @@ while True:
     except KeyboardInterrupt:
         if data_mode == DataMode.SERIAL:
             ser.close()
+        eel.close_page()
         
         break
