@@ -11,11 +11,12 @@ class DataMode(Enum):
     SERIAL = auto()
     TEST = auto()
 
-length = 50
-eel_start_delay = 2
-port = "COM3"
-data_length = 6
-data_mode = DataMode.TEST
+# 各種定数
+length = 50 # 描画に反映するまでに処理するデータの数
+eel_start_delay = 2 # 描画処理の起動待機時間
+port = "COM3" # シリアル通信するportの名前
+data_length = 6 # 時間を含めたデータの長さ（入力が[time, data1, data2]なら3）
+data_mode = DataMode.TEST # データにシリアル通信を用いるかテストデータを用いるか
 
 
 if data_mode == DataMode.SERIAL:
