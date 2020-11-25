@@ -4,16 +4,16 @@ import np_func
 import enums
 
 start_args = {
-    "size" : 50, # 描画に反映するまでに処理するデータの数
-    "eel_start_delay" : 2, # 描画処理の起動待機時間
+    "size" : 50, # 描画に反映するまでに処理するデータの数（今はnumpyのデータサイズと共通）
+    "eel_start_delay" : 2, # 描画処理の起動待機時間（Viewがバグってたら増やすといいかも？）
     "port" : None, # シリアル通信するportの名前(Noneにすると勝手に選ぶ、候補複数ならVIEWで選択)
-    "data_length" : None, # 時間を含めたデータの長さ（入力が[time, data1, data2]なら3、SerialモードでNoneなら入力データから自動設定）
+    "data_length" : None, # 入力データの長さ（時間は含めない、SerialモードでNoneなら入力データから自動設定）
     "data_mode" : enums.DataMode.SERIAL, # データにシリアル通信を用いるかテストデータを用いるか
-    "view_mode" : enums.ViewMode.ALL, # eel, matplotlibなどを使うかどうか
-    "create_file_name" : "create.txt", # CREATE_DATAモードで出力するファイル名
-    "import_file_name" : "import.txt", # CREATE_DATAモードで出力するファイル名
-    "check_function" : np_func.check, # 判定で用いる関数（）
-    "has_bool" : False
+    "view_mode" : enums.ViewMode.ALL, # eel, matplotlibなどを使うかどうか。いろいろ設定できるので詳しくはenums.pyを参照
+    "create_file_name" : "create.txt", # ViewMode.CREATE_DATAモードで出力するファイル名
+    "import_file_name" : "import.txt", # DataMode.TESTモードで読み込むファイル名
+    "check_function" : np_func.check, # 判定で用いる関数（t, ys, data_length, bools(has_boolの場合のみ)を引数にとる関数）
+    "has_bool" : False # 機械学習などの用途で正誤判定が必要な場合のためにデータを取っておくフラグ。動作未確認！
 }
 
 def app(**kwargs):
@@ -112,4 +112,4 @@ def app(**kwargs):
             break
 
 if __name__ == "__main__":
-    app(data_mode=enums.DataMode.TEST, data_length=2)
+    app(data_mode=enums.DataMode.TEST, data_length=5)
