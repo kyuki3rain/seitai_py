@@ -67,7 +67,7 @@ def app(**kwargs):
 
     while True:
         try:
-            for i in range(0, start_args['size']):
+            for _i in range(0, start_args['size']):
                 if data_mode == enums.DataMode.SERIAL:
                     data = serial_func.get_data(ser)
                 elif data_mode == enums.DataMode.TEST:
@@ -101,7 +101,8 @@ def app(**kwargs):
                     print("check result is ")
                     print(result)
 
-        except:
+        except: # pylint: disable=bare-except
+            # FIX ME: 一発で抜けてくれない。matplotlibのtkinterが悪そう。
             if data_mode == enums.DataMode.SERIAL:
                 ser.close()
             if enums.ViewMode.EEL in view_mode:

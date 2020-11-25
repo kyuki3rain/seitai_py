@@ -17,7 +17,7 @@ def set_data(data, t, ys, tInt, data_length):
 
     return t, ys
 
-def check(t, ys, data_length, bools=None):
+def check(_t, ys, data_length, _bools=None):
     f = []
     for i in range(0, data_length):
         f.append(np.mean(ys[i]))

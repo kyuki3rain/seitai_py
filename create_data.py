@@ -7,7 +7,7 @@ def init(file_name):
     try:
         f = open(file_name, mode="w")
         return f
-    except:
+    except: # pylint: disable=bare-except
         print(file_name + " cannot open!")
         return
 

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 sleepTime = 0.0001  # １フレーム表示する時間[s]
 color = ["blue", "green", "red", "black", "yellow", "pink", "purple"]
 
-def init():
+def init(): # FIX ME: 今は全く意味をなしてない
     plt.ion()
     plt.figure()
     plt.ylim(0, 1023)
