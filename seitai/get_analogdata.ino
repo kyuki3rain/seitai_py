@@ -1,41 +1,45 @@
-int analogPin=A0;
-int data1 = 0;
-int data2 = 0;
-int data3 = 0;
-int data4 = 0;
-int data5 = 0;
+#define DATA_LENGTH 1
+
+int data[DATA_LENGTH];
+bool dig_data[DATA_LENGTH];
+int analogPins[] = { A0, A1, A2, A3, A4, A5, A6 }
+int digitalPins[] = { 9, 10, 11, 12, 13, 14, 15 }
 unsigned long time;
-unsigned int val0;
+int i = 0;
 
 void setup() {
     Serial.begin(9600);
+    pinMode(bool_pin, INPUT);
 }
 
-int get_data(int pin){
+int get_analog_data(int pin){
   int data;
-//  data = analogRead(pin);
-  data = random(0, 1023);
+  data = analogRead(pin);
+  // data = random(0, 1023);
   return data;
+}
+
+int get_bool(int pin){
+  bool f = digitalRead(pin);
+  Serial.print(" ");
+  Serial.print(f);
 }
 
 void loop() {
     time = micros();
-    data1 = get_data(A0);
-//    data2 = get_data(A1);
-//    data3 = get_data(A2);
-//    data4 = get_data(A3);
-//    data5 = get_data(A4);
+    for(i = 0; i < DATA_LENGTH; i++){
+      data[i] = get_analog_data(analogPins[i]);
+      // dig_data[i] = get_bool(digitalPins[i]); // サンプルデータ取得時のみコメントアウト
+    }
     Serial.print(time);
-    Serial.print(" ");
-    Serial.print(data1);
-//    Serial.print(" ");
-//    Serial.print(data2);
-//    Serial.print(" ");
-//    Serial.print(data3);
-//    Serial.print(" ");
-//    Serial.print(data4);
-//    Serial.print(" ");
-//    Serial.print(data5);
+    for(i = 0; i < DATA_LENGTH; i++){
+      Serial.print(" ");
+      Serial.print(data[i]);
+    }
+    // for(i = 0; i < DATA_LENGTH; i++){ // サンプルデータ取得時のみコメントアウト
+    //   Serial.print(" ");
+    //   Serial.print(dig_data[i]);
+    // }
     Serial.print("\n");
     delay(100);
 }

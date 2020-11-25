@@ -1,0 +1,115 @@
+import sys
+
+import np_func
+import enums
+
+start_args = {
+    "size" : 50, # 描画に反映するまでに処理するデータの数
+    "eel_start_delay" : 2, # 描画処理の起動待機時間
+    "port" : None, # シリアル通信するportの名前(Noneにすると勝手に選ぶ、候補複数ならVIEWで選択)
+    "data_length" : None, # 時間を含めたデータの長さ（入力が[time, data1, data2]なら3、SerialモードでNoneなら入力データから自動設定）
+    "data_mode" : enums.DataMode.SERIAL, # データにシリアル通信を用いるかテストデータを用いるか
+    "view_mode" : enums.ViewMode.ALL, # eel, matplotlibなどを使うかどうか
+    "create_file_name" : "create.txt", # CREATE_DATAモードで出力するファイル名
+    "import_file_name" : "import.txt", # CREATE_DATAモードで出力するファイル名
+    "check_function" : np_func.check, # 判定で用いる関数（）
+    "has_bool" : False
+}
+
+def app(**kwargs):
+    start_args.update(kwargs)
+    view_mode = start_args['view_mode']
+    data_mode = start_args['data_mode']
+    data_length = start_args['data_length']
+    has_bool = start_args['has_bool']
+
+    if data_mode == enums.DataMode.TEST and data_length is None:
+        print("Please specify data_length!")
+        return
+
+    if enums.ViewMode.EEL in view_mode:
+        import eel # pylint: disable=import-outside-toplevel
+        import eel_func # pylint: disable=import-outside-toplevel
+        eel.init("view")
+        eel.start("index.html", port=0, block=False, close_callback=eel_func.close)
+        eel.sleep(start_args['eel_start_delay'])
+
+    if enums.ViewMode.GRAPH in view_mode:
+        import plot_func # pylint: disable=import-outside-toplevel
+        plot_func.init()
+
+    if enums.ViewMode.CREATE_DATA in view_mode:
+        import create_data # pylint: disable=import-outside-toplevel
+        f = create_data.init(start_args['create_file_name'])
+
+    if data_mode == enums.DataMode.SERIAL:
+        import serial_func # pylint: disable=import-outside-toplevel
+        ser = serial_func.start(start_args['port'], view_mode)
+        if ser is None:
+            sys.exit()
+    elif data_mode == enums.DataMode.TEST:
+        import import_data # pylint: disable=import-outside-toplevel
+        init_data = import_data.init(start_args['import_file_name'])
+        j = 0
+
+    if data_mode == enums.DataMode.SERIAL:
+        data = serial_func.get_data(ser)
+        if data_length is None:
+            data_length = (len(data) - 1) / 2 if has_bool else len(data) - 1
+    elif data_mode == enums.DataMode.TEST:
+        data = import_data.get(data_length, j, init_data, has_bool)
+        j += 1
+
+    t, ys, tInt = np_func.init(data, start_args['size'], data_length)
+
+    if has_bool:
+        bools = [data[data_length:]]
+
+    while True:
+        try:
+            for i in range(0, start_args['size']):
+                if data_mode == enums.DataMode.SERIAL:
+                    data = serial_func.get_data(ser)
+                elif data_mode == enums.DataMode.TEST:
+                    data = import_data.get(data_length, j, init_data, has_bool)
+                    j += 1
+
+                if has_bool:
+                    bools.append(data[data_length:])
+                    if len(bools) > start_args['size']:
+                        bools.pop(0)
+
+                if enums.ViewMode.TERMINAL in view_mode:
+                    print(data)
+                if enums.ViewMode.CREATE_DATA in view_mode:
+                    create_data.write(f, data)
+                if len(data) != data_length + 1:
+                    continue
+
+                t, ys = np_func.set_data(data, t, ys, tInt, data_length)
+                if enums.ViewMode.GRAPH in view_mode:
+                    plot_func.update(t, ys, data_length)
+
+            if not enums.ViewMode.CREATE_DATA in view_mode:
+                if has_bool:
+                    result = start_args['check_function'](t, ys, data_length, bools)
+                else:
+                    result = start_args['check_function'](t, ys, data_length)
+                if enums.ViewMode.EEL in view_mode:
+                    eel.render_data(result, data_length) # pylint: disable=no-member
+                if enums.ViewMode.TERMINAL in view_mode:
+                    print("check result is ")
+                    print(result)
+
+        except:
+            if data_mode == enums.DataMode.SERIAL:
+                ser.close()
+            if enums.ViewMode.EEL in view_mode:
+                eel.close_page() # pylint: disable=no-member
+            if enums.ViewMode.CREATE_DATA in view_mode:
+                f.close()
+
+            break
+
+if __name__ == "__main__":
+    app(data_mode=enums.DataMode.TEST, data_length=2)

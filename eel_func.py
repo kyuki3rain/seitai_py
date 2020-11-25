@@ -7,5 +7,5 @@ def close(page, _sockets):
         sys.exit()
 
 def get_port(port_name_list):
-    port_num = eel.select_port(port_name_list)()
+    port_num = eel.select_port(port_name_list)() # pylint: disable=no-member
     return port_name_list[port_num]
