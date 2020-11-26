@@ -31,6 +31,7 @@ def get(row, i, data, has_bool):
 
     if has_bool:
         for j in range(0, row):
+            a = (t + step * j) % length
             res.append(str(data[a][2]).encode())
 
     return res

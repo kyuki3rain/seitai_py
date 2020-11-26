@@ -56,14 +56,20 @@ def app(**kwargs):
         data = serial_func.get_data(ser)
         if data_length is None:
             data_length = (len(data) - 1) / 2 if has_bool else len(data) - 1
+        while len(data) == 0:
+            print(data)
+            data = serial_func.get_data(ser)
     elif data_mode == enums.DataMode.TEST:
         data = import_data.get(data_length, j, init_data, has_bool)
         j += 1
+    
 
     t, ys, tInt = np_func.init(data, start_args['size'], data_length)
 
     if has_bool:
-        bools = [data[data_length:]]
+        bools = np_func.bool_init(data_length, start_args['size'])
+        bools = np_func.set_bool_data(bools, data, data_length)
+        data = data[:(data_length + 1)]
 
     while True:
         try:
@@ -75,9 +81,8 @@ def app(**kwargs):
                     j += 1
 
                 if has_bool:
-                    bools.append(data[data_length:])
-                    if len(bools) > start_args['size']:
-                        bools.pop(0)
+                    bools = np_func.set_bool_data(bools, data, data_length)
+                    data = data[:(data_length + 1)]
 
                 if enums.ViewMode.TERMINAL in view_mode:
                     print(data)
@@ -101,8 +106,9 @@ def app(**kwargs):
                     print("check result is ")
                     print(result)
 
-        except: # pylint: disable=bare-except
+        except: 
             # FIX ME: 一発で抜けてくれない。matplotlibのtkinterが悪そう。
+            print(sys.exc_info()[0])
             if data_mode == enums.DataMode.SERIAL:
                 ser.close()
             if enums.ViewMode.EEL in view_mode:
@@ -113,4 +119,4 @@ def app(**kwargs):
             break
 
 if __name__ == "__main__":
-    app(data_mode=enums.DataMode.TEST, data_length=5)
+    app(data_mode=enums.DataMode.SERIAL, data_length=1)

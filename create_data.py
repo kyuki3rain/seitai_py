@@ -30,5 +30,6 @@ if __name__ == "__main__":
         main.app(
             data_mode=enums.DataMode.SERIAL,
             view_mode=enums.ViewMode.CREATE_DATA_WITH_TERMINAL,
-            data_length=2
+            has_bool=True,
+            data_length=1
         )
