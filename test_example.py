@@ -10,13 +10,11 @@ color = ["blue", "green", "red", "black", "yellow", "pink", "purple"]
 def new_check(t, ys, data_length, bools=None):
     f = []
     s = []
-    print(bools)
     for i in range(0, data_length):
-        f.append(np.mean(np.abs(np.diff(ys[i], n=1))))
+        f.append(np.mean(ys[i]))
         plt.plot(t, ys[i], color=color[i], label=str(i))
-        s.append(statistics.mean(bools[i]))
+        s.append(np.mean(bools[i]))
     print(f, s)
-    plt.show()
     return f
 
 main.app(
