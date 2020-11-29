@@ -1,7 +1,7 @@
+import sys
+import statistics
 import numpy as np
 import matplotlib.pyplot as plt
-import statistics
-import sys
 
 import main
 import enums
