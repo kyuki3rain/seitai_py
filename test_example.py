@@ -15,7 +15,7 @@ def new_check(t, ys, data_length, bools=None):
         plt.plot(t, ys[i], color=color[i], label=str(i))
         s.append(np.mean(bools[i]))
     print(f, s)
-    return f
+    return f, None # 二つ目の返り値はEELで描画するかどうか。Noneなら前回のfと違う場合のみ描画
 
 main.app(
     check_function=new_check,

@@ -30,14 +30,14 @@ def new_check(t, ys, data_length, bools=None):
         print(np.mean(zz))
         sys.exit()
 
-    return f
+    return f, None # 二つ目の返り値はEELで描画するかどうか。Noneなら前回のfと違う場合のみ描画
 
 main.app(
     check_function=new_check,
     data_mode=enums.DataMode.TEST,
-    view_mode=enums.ViewMode.SIMPLE,
+    view_mode=enums.ViewMode.GRAPH,
     import_file_name="tmp/arm4.txt",
-    size=10,
-    data_length=5,
+    size=50,
+    data_length=1,
     has_bool=True
 )

@@ -94,22 +94,25 @@ def app(**kwargs):
                 plot_func.update(t, ys, data_length)
             if not enums.ViewMode.CREATE_DATA in view_mode:
                 if has_bool:
-                    result = start_args['check_function'](t, ys, data_length, bools)
+                    result, draw = start_args['check_function'](t, ys, data_length, bools)
                 else:
-                    result = start_args['check_function'](t, ys, data_length)
+                    result, draw = start_args['check_function'](t, ys, data_length)
                 if enums.ViewMode.TERMINAL in view_mode:
                     print("check result is ")
                     print(result)
 
-            if old_result is not None:
-                if not all(result == old_result):
-                    if not enums.ViewMode.CREATE_DATA in view_mode:
-                        if enums.ViewMode.EEL in view_mode:
+            if not enums.ViewMode.CREATE_DATA in view_mode:
+                if enums.ViewMode.EEL in view_mode:
+                    if old_result is not None:
+                        if not np_func.equal(result, old_result):
                             eel.render_data(result, data_length) # pylint: disable=no-member
+                            print("draw")
+                    elif draw:
+                        eel.render_data(result, data_length) # pylint: disable=no-member
 
             old_result = result
 
-        except KeyboardInterrupt: 
+        except KeyboardInterrupt:
             # FIX ME: 一発で抜けてくれない。matplotlibのtkinterが悪そう。
             if data_mode == enums.DataMode.SERIAL:
                 ser.close()

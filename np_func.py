@@ -30,9 +30,17 @@ def set_data(data, t, ys, tInt, data_length):
 
     return t, ys
 
-def check(_t, ys, data_length, _bools=None):
+def equal(a, b):
+    return np.array_equal(a, b)
+
+def check(t, ys, data_length, bools=None):
+    print("time is ", t)
+    print("ys is ", ys)
+    print("length is ", data_length)
+    print("bools is ", bools)
+
     f = []
     for i in range(0, data_length):
         f.append(np.mean(ys[i]))
 
-    return f
+    return f, None
