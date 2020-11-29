@@ -105,12 +105,11 @@ def app(**kwargs):
                 if enums.ViewMode.EEL in view_mode:
                     if old_result is not None:
                         if not np_func.equal(result, old_result):
-                            eel.render_data(result, data_length) # pylint: disable=no-member
-                            print("draw")
+                            eel_func.render(result, data_length)
                     elif draw:
-                        eel.render_data(result, data_length) # pylint: disable=no-member
-
-            old_result = result
+                        eel_func.render(result, data_length)
+            
+            old_result = np_func.copy(result)
 
         except KeyboardInterrupt:
             # FIX ME: 一発で抜けてくれない。matplotlibのtkinterが悪そう。

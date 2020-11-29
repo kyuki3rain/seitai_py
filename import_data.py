@@ -1,5 +1,6 @@
 import sys
 import math
+import time
 
 import main
 import enums
@@ -34,6 +35,7 @@ def get(row, i, data, has_bool):
             a = (t + step * j) % length
             res.append(str(data[a][2]).encode())
 
+    time.sleep(0.1)
     return res
 
 if __name__ == "__main__":

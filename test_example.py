@@ -8,14 +8,12 @@ import enums
 color = ["blue", "green", "red", "black", "yellow", "pink", "purple"]
 
 def new_check(t, ys, data_length, bools=None):
-    f = []
-    s = []
-    for i in range(0, data_length):
-        f.append(np.mean(ys[i]))
-        plt.plot(t, ys[i], color=color[i], label=str(i))
-        s.append(np.mean(bools[i]))
-    print(f, s)
-    return f, None # 二つ目の返り値はEELで描画するかどうか。Noneなら前回のfと違う場合のみ描画
+    print("time is ", t)
+    print("ys is ", ys)
+    print("length is ", data_length)
+    print(bools)
+
+    return bools[::, -1], None # 二つ目の返り値はEELで描画するかどうか。Noneなら前回のfと違う場合のみ描画
 
 main.app(
     check_function=new_check,
@@ -23,6 +21,6 @@ main.app(
     view_mode=enums.ViewMode.SIMPLE,
     import_file_name="tmp/arm2.txt",
     size=10,
-    data_length=2,
+    data_length=5,
     has_bool=True
 )

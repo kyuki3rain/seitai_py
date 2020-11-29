@@ -32,6 +32,9 @@ def set_data(data, t, ys, tInt, data_length):
 
 def equal(a, b):
     return np.array_equal(a, b)
+    
+def copy(a):
+    return np.copy(a)
 
 def check(t, ys, data_length, bools=None):
     print("time is ", t)
