@@ -6,7 +6,7 @@ import enums
 start_args = {
     "size" : 50, # 描画に反映するまでに処理するデータの数（今はnumpyのデータサイズと共通）
     "eel_start_delay" : 2, # 描画処理の起動待機時間（Viewがバグってたら増やすといいかも？）
-    "port" : None, # シリアル通信するportの名前(Noneにすると勝手に選ぶ、候補複数ならVIEWで選択)
+    "port" : None, # シリアル通信するportの名前(Noneにすると勝手に選ぶ、候補複数ならVIEWで選択）
     "data_length" : None, # 入力データの長さ（時間は含めない、SerialモードでNoneなら入力データから自動設定）
     "data_mode" : enums.DataMode.SERIAL, # データにシリアル通信を用いるかテストデータを用いるか
     "view_mode" : enums.ViewMode.ALL, # eel, matplotlibなどを使うかどうか。いろいろ設定できるので詳しくはenums.pyを参照
@@ -62,50 +62,52 @@ def app(**kwargs):
     elif data_mode == enums.DataMode.TEST:
         data = import_data.get(data_length, j, init_data, has_bool)
         j += 1
-    
 
     t, ys, tInt = np_func.init(data, start_args['size'], data_length)
+    old_result = None
 
     if has_bool:
         bools = np_func.bool_init(data_length, start_args['size'])
         bools = np_func.set_bool_data(bools, data, data_length)
         data = data[:(data_length + 1)]
-
     while True:
         try:
-            for _i in range(0, start_args['size']):
-                if data_mode == enums.DataMode.SERIAL:
-                    data = serial_func.get_data(ser)
-                elif data_mode == enums.DataMode.TEST:
-                    data = import_data.get(data_length, j, init_data, has_bool)
-                    j += 1
+            if data_mode == enums.DataMode.SERIAL:
+                data = serial_func.get_data(ser)
+            elif data_mode == enums.DataMode.TEST:
+                data = import_data.get(data_length, j, init_data, has_bool)
+                j += 1
 
-                if has_bool:
-                    bools = np_func.set_bool_data(bools, data, data_length)
-                    data = data[:(data_length + 1)]
+            if has_bool:
+                bools = np_func.set_bool_data(bools, data, data_length)
+                data = data[:(data_length + 1)]
 
-                if enums.ViewMode.TERMINAL in view_mode:
-                    print(data)
-                if enums.ViewMode.CREATE_DATA in view_mode:
-                    create_data.write(f, data)
-                if len(data) != data_length + 1:
-                    continue
+            if enums.ViewMode.TERMINAL in view_mode:
+                print(data)
+            if enums.ViewMode.CREATE_DATA in view_mode:
+                create_data.write(f, data)
+            if len(data) != data_length + 1:
+                continue
 
-                t, ys = np_func.set_data(data, t, ys, tInt, data_length)
-                if enums.ViewMode.GRAPH in view_mode:
-                    plot_func.update(t, ys, data_length)
-                if not enums.ViewMode.CREATE_DATA in view_mode:
-                    if has_bool:
-                        result = start_args['check_function'](t, ys, data_length, bools)
-                    else:
-                        result = start_args['check_function'](t, ys, data_length)
-                    if enums.ViewMode.TERMINAL in view_mode:
-                        print("check result is ")
-                        print(result)
-
+            t, ys = np_func.set_data(data, t, ys, tInt, data_length)
+            if enums.ViewMode.GRAPH in view_mode:
+                plot_func.update(t, ys, data_length)
             if not enums.ViewMode.CREATE_DATA in view_mode:
-                if enums.ViewMode.EEL in view_mode:
-                    eel.render_data(result, data_length) # pylint: disable=no-member
+                if has_bool:
+                    result = start_args['check_function'](t, ys, data_length, bools)
+                else:
+                    result = start_args['check_function'](t, ys, data_length)
+                if enums.ViewMode.TERMINAL in view_mode:
+                    print("check result is ")
+                    print(result)
+
+            if old_result is not None:
+                if not all(result == old_result):
+                    if not enums.ViewMode.CREATE_DATA in view_mode:
+                        if enums.ViewMode.EEL in view_mode:
+                            eel.render_data(result, data_length) # pylint: disable=no-member
+
+            old_result = result
 
         except KeyboardInterrupt: 
             # FIX ME: 一発で抜けてくれない。matplotlibのtkinterが悪そう。
