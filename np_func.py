@@ -32,7 +32,7 @@ def set_data(data, t, ys, tInt, data_length):
 
 def equal(a, b):
     return np.array_equal(a, b)
-    
+
 def copy(a):
     return np.copy(a)
 
@@ -42,8 +42,8 @@ def check(t, ys, data_length, bools=None):
     print("length is ", data_length)
     print("bools is ", bools)
 
-    f = []
+    f = np.array([])
     for i in range(0, data_length):
-        f.append(np.mean(ys[i]))
+        np.append(f, np.mean(ys[i]))
 
     return f, None
