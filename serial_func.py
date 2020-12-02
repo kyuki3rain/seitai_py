@@ -23,7 +23,7 @@ def start(port, view_mode):
 def get_data(ser):
     return ser.readline().strip().rsplit()
 
-def select_port(view_mode):
+def select_port():
     ports = list_ports.comports()    # ポートデータを取得
 
     devices = [info.device for info in ports]
@@ -35,16 +35,5 @@ def select_port(view_mode):
     elif len(devices) == 1:
         print("only found %s" % devices[0])
         port = devices[0]
-    else:
-        # ポートが複数見つかった場合それらを表示し選択させる
-        if enums.ViewMode.EEL in view_mode:
-            import eel_func # pylint: disable=import-outside-toplevel
-            port = eel_func.get_port(devices)  # 動作未確認！！！！
-        elif enums.ViewMode.TERMINAL in view_mode:
-            for i, device in devices:
-                print("input %3d: open %s" % (i, device))
-            print("input number of target port >> ", end="")
-            num = int(input())
-            port = devices[num]
 
-    return port
+    return devices, port
