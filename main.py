@@ -5,15 +5,15 @@ import enums
 
 start_args = {
     "size" : 50, # 描画に反映するまでに処理するデータの数（今はnumpyのデータサイズと共通）
-    "eel_start_delay" : 2, # 描画処理の起動待機時間（Viewがバグってたら増やすといいかも？）
     "port" : None, # シリアル通信するportの名前(Noneにすると勝手に選ぶ、候補複数ならVIEWで選択）
     "data_length" : None, # 入力データの長さ（時間は含めない、SerialモードでNoneなら入力データから自動設定）
     "data_mode" : enums.DataMode.SERIAL, # データにシリアル通信を用いるかテストデータを用いるか
     "view_mode" : enums.ViewMode.ALL, # eel, matplotlibなどを使うかどうか。いろいろ設定できるので詳しくはenums.pyを参照
-    "create_file_name" : "create.txt", # ViewMode.CREATE_DATAモードで出力するファイル名
-    "import_file_name" : "import.txt", # DataMode.TESTモードで読み込むファイル名
+    "create_file_name" : "data/create.txt", # ViewMode.CREATE_DATAモードで出力するファイル名
+    "import_file_name" : "data/import.txt", # DataMode.TESTモードで読み込むファイル名
     "check_function" : np_func.check, # 判定で用いる関数（t, ys, data_length, bools(has_boolの場合のみ)を引数にとる関数）
-    "has_bool" : False # 機械学習などの用途で正誤判定が必要な場合のためにデータを取っておくフラグ。動作未確認！
+    "has_bool" : False, # 機械学習などの用途で正誤判定が必要な場合のためにデータを取っておくフラグ。動作未確認！
+    "eel" : None
 }
 
 def app(**kwargs):
@@ -28,12 +28,11 @@ def app(**kwargs):
         return
 
     if enums.ViewMode.EEL in view_mode:
-        import eel # pylint: disable=import-outside-toplevel
-        import eel_func # pylint: disable=import-outside-toplevel
-        eel.init("view")
-        eel.start("index.html", port=0, block=False, close_callback=eel_func.close)
-        eel.sleep(start_args['eel_start_delay'])
-
+        import eel_func
+        if start_args["eel"] is not None:
+            eel = start_args["eel"]
+        else:
+            eel = eel_func.init(start_args["eel_start_delay"])
     if enums.ViewMode.GRAPH in view_mode:
         import plot_func # pylint: disable=import-outside-toplevel
         plot_func.init()
@@ -46,7 +45,7 @@ def app(**kwargs):
         import serial_func # pylint: disable=import-outside-toplevel
         ser = serial_func.start(start_args['port'], view_mode)
         if ser is None:
-            sys.exit()
+            raise "NoSerialError"
     elif data_mode == enums.DataMode.TEST:
         import import_data # pylint: disable=import-outside-toplevel
         init_data = import_data.init(start_args['import_file_name'])

@@ -1,6 +1,11 @@
 import sys
 import eel
 
+def init(eel_start_delay):
+    eel.init("view")
+    eel.start("index.html", port=0, block=False, close_callback=close)
+    eel.sleep(eel_start_delay)
+
 def close(page, _sockets):
     print(page + " is finished!")
     while True:

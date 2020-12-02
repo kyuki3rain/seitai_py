@@ -1,6 +1,12 @@
 Google Chromeが必須
 
 １．Python3系がコマンドから動かせるようにする
+任意のpythonを入れる
+環境変数を入れる
+pip install pyenv-win --target "$HOME\.pyenv"
+
+brew install pyenv
+
 
 ２．ライブラリインストール
 - numpy
@@ -8,9 +14,9 @@ Google Chromeが必須
 - matplotlib
 - pyserial
 
+conda install -c bioconda python-eel
 
-をそれぞれ
-python -m pip install <パッケージ名>
+python -m pipenv install numpy matplotlib eel pyserial
 でインストール
 
 ３．実行
