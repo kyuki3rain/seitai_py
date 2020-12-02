@@ -37,13 +37,14 @@ def copy(a):
     return np.copy(a)
 
 def check(t, ys, data_length, bools=None):
-    print("time is ", t)
-    print("ys is ", ys)
-    print("length is ", data_length)
-    print("bools is ", bools)
+    # print("time is ", t)
+    # print("ys is ", ys)
+    # print("length is ", data_length)
+    # print("bools is ", bools)
 
     f = np.array([])
     for i in range(0, data_length):
-        np.append(f, np.mean(ys[i]))
+        p = np.mean(ys[i])
+        f = np.append(f, p > 12)
 
     return f, None

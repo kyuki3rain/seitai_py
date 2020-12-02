@@ -3,6 +3,11 @@ import sys
 import np_func
 import enums
 
+def re(result, view_mode, old_result):
+    print(result)
+def red(data):
+    print(data)
+
 start_args = {
     "size" : 50, # 描画に反映するまでに処理するデータの数（今はnumpyのデータサイズと共通）
     "eel_start_delay" : 2, # 描画処理の起動待機時間（Viewがバグってたら増やすといいかも？）
@@ -13,7 +18,10 @@ start_args = {
     "create_file_name" : "create.txt", # ViewMode.CREATE_DATAモードで出力するファイル名
     "import_file_name" : "import.txt", # DataMode.TESTモードで読み込むファイル名
     "check_function" : np_func.check, # 判定で用いる関数（t, ys, data_length, bools(has_boolの場合のみ)を引数にとる関数）
-    "has_bool" : False # 機械学習などの用途で正誤判定が必要な場合のためにデータを取っておくフラグ。動作未確認！
+    "has_bool" : False, # 機械学習などの用途で正誤判定が必要な場合のためにデータを取っておくフラグ。動作未確認！
+    "eel" : None,
+    "set_result" : re,
+    "set_data" : red
 }
 
 def app(**kwargs):
@@ -22,17 +30,15 @@ def app(**kwargs):
     data_mode = start_args['data_mode']
     data_length = start_args['data_length']
     has_bool = start_args['has_bool']
+    set_result = start_args["set_result"]
+    set_data = start_args["set_data"]
 
     if data_mode == enums.DataMode.TEST and data_length is None:
         print("Please specify data_length!")
         return
 
     if enums.ViewMode.EEL in view_mode:
-        import eel # pylint: disable=import-outside-toplevel
-        import eel_func # pylint: disable=import-outside-toplevel
-        eel.init("view")
-        eel.start("index.html", port=0, block=False, close_callback=eel_func.close)
-        eel.sleep(start_args['eel_start_delay'])
+        eel = start_args["eel"]
 
     if enums.ViewMode.GRAPH in view_mode:
         import plot_func # pylint: disable=import-outside-toplevel
@@ -100,16 +106,10 @@ def app(**kwargs):
                 if enums.ViewMode.TERMINAL in view_mode:
                     print("check result is ")
                     print(result)
-
-            if not enums.ViewMode.CREATE_DATA in view_mode:
-                if enums.ViewMode.EEL in view_mode:
-                    if old_result is not None:
-                        if not np_func.equal(result, old_result):
-                            eel_func.render(result, data_length)
-                    elif draw:
-                        eel_func.render(result, data_length)
-            
+            set_result(result, view_mode, old_result)
+            set_data(data)
             old_result = np_func.copy(result)
+            eel.sleep(0.03)
 
         except KeyboardInterrupt:
             # FIX ME: 一発で抜けてくれない。matplotlibのtkinterが悪そう。
