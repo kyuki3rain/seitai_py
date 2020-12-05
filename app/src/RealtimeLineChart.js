@@ -19,7 +19,7 @@ const RealtimeLineChart = (props) => {
     },
     xaxis: {
       type: "datetime",
-      range: 2000000,
+      range: 2,
     },
     yaxis: {
       show: false,

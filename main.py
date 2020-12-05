@@ -21,7 +21,8 @@ start_args = {
     "has_bool" : False, # 機械学習などの用途で正誤判定が必要な場合のためにデータを取っておくフラグ。動作未確認！
     "eel" : None,
     "set_result" : re,
-    "set_data" : red
+    "set_data" : red,
+    "threshold" : 0
 }
 
 def app(**kwargs):
@@ -37,8 +38,7 @@ def app(**kwargs):
         print("Please specify data_length!")
         return
 
-    if enums.ViewMode.EEL in view_mode:
-        eel = start_args["eel"]
+    eel = start_args["eel"]
 
     if enums.ViewMode.GRAPH in view_mode:
         import plot_func # pylint: disable=import-outside-toplevel
@@ -103,9 +103,12 @@ def app(**kwargs):
                     result, draw = start_args['check_function'](t, ys, data_length, bools)
                 else:
                     result, draw = start_args['check_function'](t, ys, data_length)
+                    print(result, draw)
                 if enums.ViewMode.TERMINAL in view_mode:
                     print("check result is ")
                     print(result)
+                if draw == "break":
+                    break
             set_result(result, view_mode, old_result)
             set_data(data)
             old_result = np_func.copy(result)

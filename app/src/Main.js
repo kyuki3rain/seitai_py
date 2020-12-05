@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import Init from "./Init";
 import App from "./App";
 import Graph from "./graph";
+import useInterval from "use-interval";
 
 function Main() {
   const [mode, setMode] = useState();
@@ -17,6 +18,16 @@ function Main() {
   useEffect(() => {
     get_mode();
   }, []);
+  useEffect(()=>{
+    if(mode === "cal"){
+      eel.start_app();
+    }
+  },[mode])
+  useInterval(() => {
+    if (mode == "cal") {
+      get_mode();
+    }
+  }, 1000);
 
   if (mode === "init") {
     return <Init setMode={setMode}></Init>;

@@ -25,17 +25,17 @@ void loop() {
     time = micros();
     for(i = 0; i < DATA_LENGTH; i++){
       data[i] = get_analog_data(analogPins[i]);
-       dig_data[i] = !digitalRead(digitalPins[i]); // サンプルデータ取得時のみコメントアウト
+//       dig_data[i] = !digitalRead(digitalPins[i]); // サンプルデータ取得時のみコメントアウト
     }
     Serial.print(time);
     for(i = 0; i < DATA_LENGTH; i++){
       Serial.print(" ");
       Serial.print(data[i]);
     }
-     for(i = 0; i < DATA_LENGTH; i++){ // サンプルデータ取得時のみコメントアウト
-       Serial.print(" ");
-       Serial.print(dig_data[i]);
-     }
+//     for(i = 0; i < DATA_LENGTH; i++){ // サンプルデータ取得時のみコメントアウト
+//       Serial.print(" ");
+//       Serial.print(dig_data[i]);
+//     }
     Serial.print("\n");
     delay(100);
 }

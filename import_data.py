@@ -24,7 +24,7 @@ def get(row, i, data, has_bool):
     r = math.floor(i / length)
 
     step = math.floor(length/row)
-    res = [str(data[-1][0] * r + data[t][0]).encode()]
+    res = [str(float(data[-1][0]) * r + float(data[t][0])).encode()]
 
     for j in range(0, row):
         a = (t + step * j) % length
