@@ -3,14 +3,14 @@ import eel from "./eel";
 import React, { useState, useEffect } from "react";
 import Init from "./Init";
 import App from "./App";
-import Graph from "./graph";
+import Graph from "./Graph";
 import useInterval from "use-interval";
 
 function Main() {
   const [mode, setMode] = useState();
   const get_mode = async () => {
-    console.log("get_mode ok!");
     const new_mode = await eel.get_mode()();
+    console.log("get_mode ok!");
     console.log(new_mode);
     setMode(new_mode);
   };
@@ -19,12 +19,12 @@ function Main() {
     get_mode();
   }, []);
   useEffect(()=>{
-    if(mode === "cal"){
+    if(mode !== "init"){
       eel.start_app();
     }
   },[mode])
   useInterval(() => {
-    if (mode == "cal") {
+    if (mode === "calibration") {
       get_mode();
     }
   }, 1000);
@@ -32,13 +32,16 @@ function Main() {
   if (mode === "init") {
     return <Init setMode={setMode}></Init>;
   }
-  if (mode === "app") {
+  if (mode === "application") {
     return (
       <div>
         <App></App>
         <Graph></Graph>
       </div>
     );
+  }
+  if(mode === "calibration"){
+    return <div>calibration now...</div>
   }
 
   return <div>loading...</div>;

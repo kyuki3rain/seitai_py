@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import eel from "./eel";
 import useInterval from "use-interval";
 
@@ -10,11 +10,6 @@ function App() {
     const result = await eel.get_result()();
     setFlags(result);
   };
-
-  useEffect(() => {
-    console.log("app load!");
-    eel.start_app();
-  }, []);
 
   useInterval(() => {
     render_data();

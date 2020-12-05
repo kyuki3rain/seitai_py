@@ -40,6 +40,26 @@
 .row {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  width: 300px;
+  justify-content: space-between;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  margin-right: 200px;
+}
+
+.input {
+  width: 60px;
+  height: 30px;
+}
+
+.input_long {
+  width: 150px;
+  height: 30px;
 }

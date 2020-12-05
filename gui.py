@@ -13,7 +13,8 @@ start_args = {
     "data" : [],
     "data_length" : 2,
     "data_mode" : "serial",
-    "threshold" : 0
+    "threshold" : 0,
+    "import_file_name" : "data/arm2.txt"
 }
 
 def form(data):
@@ -37,7 +38,7 @@ def check(t, ys, data_length):
     f = np.array([])
     for i in range(0, data_length):
         p = np.mean(ys[i])
-        f = np.append(f, p + 5 > start_args["threshold"])
+        f = np.append(f, p > start_args["threshold"])
         print(start_args["threshold"], p)
 
     return f, None
@@ -71,11 +72,11 @@ def set_data(data):
 @eel.expose
 def start_app():
     print("start app!!")
-    if start_args["data_mode"] == "test":
-        data_mode = enums.DataMode.TEST
-    else:
+    if start_args["data_mode"] == "serial":
         data_mode = enums.DataMode.SERIAL
-    if start_args["mode"] == "app":
+    elif start_args["data_mode"] == "test":
+        data_mode = enums.DataMode.TEST
+    if start_args["mode"] == "application":
         main.app(
             data_mode=data_mode,
             view_mode=enums.ViewMode.EEL,
@@ -83,23 +84,32 @@ def start_app():
             port=start_args["port"],
             eel=eel,
             set_result=set_result,
-            import_file_name="data/arm2.txt",
+            import_file_name=start_args["import_file_name"],
             set_data=set_data,
             check_function=check
         )
         return
-    if start_args["mode"] == "cal":
-        print("start cal!!!")
+    if start_args["mode"] == "calibration":
+        print("start calibration!!!")
         main.app(
             data_mode=data_mode,
             view_mode=enums.ViewMode.SIMPLE,
             data_length=start_args["data_length"],
             port=start_args["port"],
             eel=eel,
-            set_result=set_result,
-            import_file_name="data/arm2_cal.txt",
-            set_data=set_data,
+            import_file_name=start_args["import_file_name"],
             check_function=check_threshold
+        )
+        start_args.update({"mode": "init"})
+    if start_args["mode"] == "create_data":
+        print("create data!!!")
+        main.app(
+            data_mode=data_mode,
+            view_mode=enums.ViewMode.CREATE_DATA,
+            data_length=start_args["data_length"],
+            port=start_args["port"],
+            eel=eel,
+            create_file_name=start_args["import_file_name"],
         )
         start_args.update({"mode": "init"})
 
@@ -111,6 +121,13 @@ def get_result():
 def get_data():
     return start_args["data"]
 
-# try:
+@eel.expose
+def get_threshold():
+    return start_args["threshold"]
+
+@eel.expose
+def get_import_file_name():
+    return start_args["import_file_name"]
+
 eel.init("app/build")
 eel.start("index.html", port=0, close_callback=eel_func.close)
