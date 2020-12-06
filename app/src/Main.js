@@ -7,13 +7,18 @@ import Graph from "./Graph";
 import useInterval from "use-interval";
 
 function Main() {
-  const [mode, setMode] = useState();
+  const [mode, setModeState] = useState();
   const get_mode = async () => {
     const new_mode = await eel.get_mode()();
     console.log("get_mode ok!");
     console.log(new_mode);
     setMode(new_mode);
   };
+
+  const setMode = (new_mode) => {
+    setModeState(new_mode);
+    eel.set_args({mode: new_mode});
+  }
 
   useEffect(() => {
     get_mode();
@@ -35,8 +40,8 @@ function Main() {
   if (mode === "application") {
     return (
       <div>
-        <App></App>
-        <Graph></Graph>
+        <App setMode={setMode}></App>
+        {/* <Graph></Graph> */}
       </div>
     );
   }
