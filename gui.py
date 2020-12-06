@@ -1,5 +1,6 @@
 import sys
-# from serial.tools import list_ports
+import glob
+import serial
 import numpy as np
 import eel
 import eel_func
@@ -16,6 +17,34 @@ start_args = {
     "threshold" : 0,
     "import_file_name" : "data/arm2.txt"
 }
+
+def serial_ports():
+    """ Lists serial port names
+
+        :raises EnvironmentError:
+            On unsupported or unknown platforms
+        :returns:
+            A list of the serial ports available on the system
+    """
+    if sys.platform.startswith('win'):
+        ports = ['COM%s' % (i + 1) for i in range(256)]
+    elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
+        # this excludes your current terminal "/dev/tty"
+        ports = glob.glob('/dev/tty[A-Za-z]*')
+    elif sys.platform.startswith('darwin'):
+        ports = glob.glob('/dev/tty.*')
+    else:
+        raise EnvironmentError('Unsupported platform')
+
+    result = []
+    for port in ports:
+        try:
+            s = serial.Serial(port)
+            s.close()
+            result.append(port)
+        except (OSError, serial.SerialException):
+            pass
+    return result
 
 def form(data):
     return float(data)
@@ -51,8 +80,8 @@ def get_mode():
 
 @eel.expose
 def get_ports():
-    # ports = list_ports.comports()    # ポートデータを取得
-    # devices = [info.device for info in ports]
+    ports = serial_ports()
+    devices = [info.device for info in ports]
     devices = [""]
     return devices
 
