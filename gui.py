@@ -1,5 +1,5 @@
 import sys
-from serial.tools import list_ports
+# from serial.tools import list_ports
 import numpy as np
 import eel
 import eel_func
@@ -51,8 +51,9 @@ def get_mode():
 
 @eel.expose
 def get_ports():
-    ports = list_ports.comports()    # ポートデータを取得
-    devices = [info.device for info in ports]
+    # ports = list_ports.comports()    # ポートデータを取得
+    # devices = [info.device for info in ports]
+    devices = [""]
     return devices
 
 @eel.expose
