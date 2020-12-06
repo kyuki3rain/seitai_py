@@ -44,6 +44,7 @@ def serial_ports():
             result.append(port)
         except (OSError, serial.SerialException):
             pass
+    print(result)
     return result
 
 def form(data):
@@ -80,9 +81,7 @@ def get_mode():
 
 @eel.expose
 def get_ports():
-    ports = serial_ports()
-    devices = [info.device for info in ports]
-    devices = [""]
+    devices = serial_ports()
     return devices
 
 @eel.expose
