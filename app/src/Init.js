@@ -101,7 +101,7 @@ const Init = ({ setMode }) => {
           <div class="row" style={{width: 600}}>
             <div class="title">file_name</div>
             <input type="textarea" class="input_long" value={importFileName} onChange={(e) => {
-              setThreshold(e.target.value)
+              setImportFileName(e.target.value)
             }}></input>
           </div>
           <button
