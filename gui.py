@@ -54,10 +54,12 @@ z = 0
 def check_threshold(t, ys, data_length):
     global z
     print("check threshold", z)
-    for i in range(0, data_length):
+    arr = start_args["threshold"] 
+    for i in range(0, data_length - 1):
         p = np.mean(ys[i])
-        if start_args["threshold"] < p:
-            start_args.update({"threshold" : p})
+        if arr[i] < p:
+            arr[i] = p
+    start_args.update({"threshold" : arr})
     z += 1
     if z >= 100:
         return np.array([]), "break"
@@ -66,10 +68,12 @@ def check_threshold(t, ys, data_length):
 
 def check(t, ys, data_length):
     f = np.array([])
-    for i in range(0, data_length):
+    arr = start_args["threshold"]
+    for i in range(0, data_length - 1):
         p = np.mean(ys[i])
-        f = np.append(f, p > start_args["threshold"])
+        f = np.append(f, p > arr[i])
     print(start_args["mode"])
+    np.append(f, ys[data_length][-1] >= 1.0)
     if start_args["mode"] == "init":
         return f, "break"
 
@@ -115,7 +119,8 @@ def start_app():
             set_result=set_result,
             import_file_name=start_args["import_file_name"],
             set_data=set_data,
-            check_function=check
+            check_function=check,
+            size=10
         )
         return
     if start_args["mode"] == "calibration":
@@ -127,7 +132,8 @@ def start_app():
             port=start_args["port"],
             eel=eel,
             import_file_name=start_args["import_file_name"],
-            check_function=check_threshold
+            check_function=check_threshold,
+            size=10
         )
         start_args.update({"mode": "init"})
     if start_args["mode"] == "create_data":
@@ -139,6 +145,7 @@ def start_app():
             port=start_args["port"],
             eel=eel,
             create_file_name=start_args["import_file_name"],
+            size=10
         )
         start_args.update({"mode": "init"})
 

@@ -9,7 +9,7 @@ def red(data):
     print(data)
 
 start_args = {
-    "size" : 50, # 描画に反映するまでに処理するデータの数（今はnumpyのデータサイズと共通）
+    "size" : 10, # 描画に反映するまでに処理するデータの数（今はnumpyのデータサイズと共通）
     "eel_start_delay" : 2, # 描画処理の起動待機時間（Viewがバグってたら増やすといいかも？）
     "port" : None, # シリアル通信するportの名前(Noneにすると勝手に選ぶ、候補複数ならVIEWで選択）
     "data_length" : None, # 入力データの長さ（時間は含めない、SerialモードでNoneなら入力データから自動設定）
@@ -112,7 +112,6 @@ def app(**kwargs):
             set_result(result, view_mode, old_result)
             set_data(data)
             old_result = np_func.copy(result)
-            eel.sleep(0.03)
 
         except KeyboardInterrupt:
             # FIX ME: 一発で抜けてくれない。matplotlibのtkinterが悪そう。

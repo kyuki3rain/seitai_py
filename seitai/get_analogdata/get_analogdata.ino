@@ -1,5 +1,4 @@
-#define DATA_LENGTH 1
-
+#define DATA_LENGTH 3
 int data[DATA_LENGTH];
 bool dig_data[DATA_LENGTH];
 int analogPins[] = { A0, A1, A2, A3, A4, A5, A6 };
@@ -24,6 +23,9 @@ int get_analog_data(int pin){
 void loop() {
     time = micros();
     for(i = 0; i < DATA_LENGTH; i++){
+      if(i == DATA_LENGTH - 1){
+        data[i] = !digitalRead(digitalPins[i]);
+      }
       data[i] = get_analog_data(analogPins[i]);
 //       dig_data[i] = !digitalRead(digitalPins[i]); // サンプルデータ取得時のみコメントアウト
     }
