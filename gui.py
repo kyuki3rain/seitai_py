@@ -15,7 +15,7 @@ start_args = {
     "data_length" : 2,
     "data_mode" : "serial",
     "threshold" : 0,
-    "import_file_name" : "data/arm2.txt"
+    "import_file_name" : "data/arm2.txt",
 }
 
 def serial_ports():
@@ -71,18 +71,16 @@ def check(t, ys, data_length):
     arr = start_args["threshold"]
     for i in range(0, data_length - 1):
         p = np.mean(ys[i])
-        f = np.append(f, p > start_args["threshold"])
-        print(start_args["threshold"], p)
-    
-    p = np.mean(ys[data_length - 1])  
-    f = np.append(f, p >= 0.5)
+        f = np.append(f, p > arr[i])
+    print(start_args["mode"])
+    np.append(f, ys[data_length][-1] >= 1.0)
+    if start_args["mode"] == "init":
+        return f, "break"
 
     return f, None
 
 @eel.expose
 def get_mode():
-    print("get_mode ok!")
-    print(start_args)
     return start_args["mode"]
 
 @eel.expose

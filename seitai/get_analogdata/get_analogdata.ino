@@ -25,7 +25,6 @@ void loop() {
     for(i = 0; i < DATA_LENGTH; i++){
       if(i == DATA_LENGTH - 1){
         data[i] = !digitalRead(digitalPins[i]);
-        break;
       }
       data[i] = get_analog_data(analogPins[i]);
 //       dig_data[i] = !digitalRead(digitalPins[i]); // サンプルデータ取得時のみコメントアウト

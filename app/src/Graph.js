@@ -1,5 +1,5 @@
 import "./App.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import eel from "./eel";
 import useInterval from "use-interval";
 import RealtimeLineChart from "./RealtimeLineChart";
@@ -15,13 +15,15 @@ const addData = (data, time, new_data) => {
   ];
 };
 
-function Graph() {
-  const nameList = ["a", "b", "c", "d", "e"];
+function Graph({setFlagsFunction}) {
+  const nameList = ["a", "b", "c"];
   const defaultDataList = nameList.map((name) => ({
     name: name,
     data: [],
   }));
   const [dataList, setDataList] = useState(defaultDataList);
+  const [flags, setFlags] = useState();
+  const [delay, setDelay] = useState(100);
 
   const render_data = async () => {
     const new_data = await eel.get_data()();
@@ -37,27 +39,30 @@ function Graph() {
     );
   };
 
-  useInterval(() => {
-    render_data();
-  }, 100);
+  useEffect(()=>{
+    let clear_func = setFlagsFunction(setFlags);
+    setDelay(100);
+    return () => {
+      clear_func();
+      setDelay(null);
+    };
+  },[]);
 
-  if (dataList) {
+  useInterval(() => {
+    render_data(setFlags);
+  }, delay);
+
+  if (dataList && flags) {
     return (
-      <div style={{ display: "flex", flexDirection: "row" }}>
-        <div style={{ width: 200, height: 150 }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "crenter", justifyContent: "space-around", height: 600 }}>
+        <div style={{ width: 200, height: 150, backgroundColor: flags[0] ? "red" : "white"}}>
           <RealtimeLineChart dataList={[dataList[0]]} />
         </div>
-        <div style={{ width: 200, height: 150 }}>
+        <div style={{ width: 200, height: 150, backgroundColor: flags[1] ? "red" : "white" }}>
           <RealtimeLineChart dataList={[dataList[1]]} />
         </div>
-        <div style={{ width: 200, height: 150 }}>
+        <div style={{ width: 200, height: 150, backgroundColor: flags[2] ? "red" : "white" }}>
           <RealtimeLineChart dataList={[dataList[2]]} />
-        </div>
-        <div style={{ width: 200, height: 150 }}>
-          <RealtimeLineChart dataList={[dataList[3]]} />
-        </div>
-        <div style={{ width: 200, height: 150 }}>
-          <RealtimeLineChart dataList={[dataList[4]]} />
         </div>
       </div>
     );
