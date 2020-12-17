@@ -9,9 +9,9 @@ const Init = ({ setMode }) => {
   const [ports, setPorts] = useState();
   const [selectValue, setSelectValue] = useState();
   const [dataValue, setDataValue] = useState("test");
-  const [modeValue, setModeValue] = useState("application");
-  const [dataLength, setDataLength] = useState(3);
-  const [threshold, setThreshold] = useState(10);
+  const [modeValue, setModeValue] = useState("calibration");
+  const [dataLength, setDataLength] = useState(1);
+  const [threshold, setThreshold] = useState(0);
   const [importFileName, setImportFileName] = useState("");
   const [flag, setFlag] = useState(null);
 
