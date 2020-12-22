@@ -15,7 +15,7 @@ const setFlagsFunction = (func) => {
     () => {
       render_data(func)
     }
-  , 500);
+  , 200);
   return () => {clearInterval(id)};
 };
 

@@ -112,6 +112,7 @@ def app(**kwargs):
             set_result(result, view_mode, old_result)
             set_data(data)
             old_result = np_func.copy(result)
+            eel.sleep(0.03)
 
         except KeyboardInterrupt:
             # FIX ME: 一発で抜けてくれない。matplotlibのtkinterが悪そう。

@@ -14,7 +14,7 @@ start_args = {
     "data" : [],
     "data_length" : 2,
     "data_mode" : "serial",
-    "threshold" : 0,
+    "threshold" : [0,0,0.5],
     "import_file_name" : "data/arm2.txt",
 }
 
@@ -69,11 +69,10 @@ def check_threshold(t, ys, data_length):
 def check(t, ys, data_length):
     f = np.array([])
     arr = start_args["threshold"]
-    for i in range(0, data_length - 1):
+    for i in range(0, data_length):
         p = np.mean(ys[i])
         f = np.append(f, p > arr[i])
     print(start_args["mode"])
-    np.append(f, ys[data_length][-1] >= 1.0)
     if start_args["mode"] == "init":
         return f, "break"
 
